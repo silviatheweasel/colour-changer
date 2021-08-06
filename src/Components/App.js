@@ -12,7 +12,9 @@ const App = () => {
   const {red, green, blue, opacity} = color;
 
   const updateColor = ({target}) => {
-    const {value, name} = target;
+    let {value, name} = target;
+    !value ? value = 0 : value = value;
+    value > 255 ? value = 255 : value = value;
     setColor((prev) => ({...prev, [name]: parseInt(value)}));
   }
 
@@ -22,10 +24,10 @@ const App = () => {
     <div className="container">
       <div 
         className="color-box"
-        style={{background: `RGBA(${red},${green},${blue},${opacity/100})`}}
+        style={{background: hexValue}}
       >   
       </div>
-      <div>
+      <div className="right-container">
         <Slider 
           name="red"
           min="0"
@@ -62,7 +64,7 @@ const App = () => {
           color={color}
           >
         </Slider>
-        <div>
+        <div className="summary-container">
           <p>RGBA({red}, {green}, {blue}, {(opacity/100).toFixed(1)})</p>
           <p>{hexValue}</p>
         </div>
@@ -91,8 +93,8 @@ const App = () => {
 
 const Slider = ({name, handleChange, color, min, max, defaultValue}) => {
   return (
-    <div>
-      <span>{name}</span>
+    <div classsName="slider">
+      <span className="color-name">{name[0].toUpperCase() + name.slice(1, name.length)}</span>
       <input 
         name={name}
         type="range" 
@@ -100,12 +102,16 @@ const Slider = ({name, handleChange, color, min, max, defaultValue}) => {
         max={max}
         onChange={handleChange}
         defaultValue={defaultValue}
+        className="slider-bar"
       ></input>
       <input
         type="number"
         name={name}
+        min={min}
+        max={max}
         onChange={handleChange}
         value={color[name]}
+        className="value-input"
       ></input>
       {name === "opacity" && <span>%</span>}
     </div>
